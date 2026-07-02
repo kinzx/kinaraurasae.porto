@@ -1,0 +1,49 @@
+# Version control
+.git
+.gitignore
+
+# Dependencies (re-installed in Docker)
+node_modules
+
+# Build outputs (rebuilt in Docker)
+.next
+out
+build
+
+# Testing
+__tests__
+e2e
+test-results
+playwright-report
+coverage
+*.test.*
+*.spec.*
+
+# IDE / Editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation
+*.md
+!README.md
+LICENSE
+
+# CI/CD
+.github
+
+# Environment files (injected via Docker/CI secrets)
+.env*
+!.env.example
+
+# Misc
+.prettierrc
+.prettierignore
+docker-compose*.yml
+Dockerfile
+.dockerignore

@@ -1,0 +1,255 @@
+# ==============================================================================
+# CD Pipeline — Docker Build & Deployment
+# ==============================================================================
+# Production: Triggers on push to main (after CI passes)
+# Preview:    Triggers on pull_request events
+# ==============================================================================
+
+name: CD — Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress deployments for the same ref
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # ────────────────────────────────────────────────────────────────────────────
+  # Job 1: Build & Push Docker Image
+  # ────────────────────────────────────────────────────────────────────────────
+  build-image:
+    name: 🐳 Build Docker Image
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build-push.outputs.digest }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # Production: tag with 'latest' and git SHA
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix=,format=short
+            # PR previews: tag with PR number
+            type=ref,event=pr
+
+      - name: Build and push Docker image
+        id: build-push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # Build arguments for environment variables
+          build-args: |
+            NEXT_TELEMETRY_DISABLED=1
+
+      - name: Image size report
+        run: |
+          echo "🐳 Docker image built successfully!"
+          echo "Tags: ${{ steps.meta.outputs.tags }}"
+          echo "Digest: ${{ steps.build-push.outputs.digest }}"
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Job 2: Deploy to Production (on main push only)
+  # ────────────────────────────────────────────────────────────────────────────
+  deploy-production:
+    name: 🚀 Deploy Production
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build-image
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    environment:
+      name: production
+      url: ${{ vars.PRODUCTION_URL }}
+
+    steps:
+      - name: Deploy to production server
+        run: |
+          echo "═══════════════════════════════════════════════════════════"
+          echo "🚀 PRODUCTION DEPLOYMENT"
+          echo "═══════════════════════════════════════════════════════════"
+          echo ""
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+          echo "Digest: ${{ needs.build-image.outputs.image-digest }}"
+          echo ""
+          echo "─── Deployment Options ───"
+          echo ""
+          echo "Option A: SSH Deploy (uncomment and configure):"
+          echo "  1. Add SSH_HOST, SSH_USER, SSH_KEY to repository secrets"
+          echo "  2. Uncomment the SSH deploy step below"
+          echo ""
+          echo "Option B: Webhook Deploy (uncomment and configure):"
+          echo "  1. Add DEPLOY_WEBHOOK_URL to repository secrets"
+          echo "  2. Uncomment the webhook step below"
+          echo ""
+          echo "Option C: Docker Compose on server:"
+          echo "  docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+          echo "  docker compose up -d --pull always"
+          echo ""
+          echo "═══════════════════════════════════════════════════════════"
+
+      # ── Option A: SSH Deploy ──────────────────────────────────────────
+      # Uncomment the following to deploy via SSH:
+      #
+      # - name: Deploy via SSH
+      #   uses: appleboy/ssh-action@v1
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     key: ${{ secrets.SSH_KEY }}
+      #     script: |
+      #       docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      #       docker compose -f /opt/portfolio/docker-compose.yml up -d --pull always
+      #       docker image prune -f
+
+      # ── Option B: Webhook Deploy ──────────────────────────────────────
+      # Uncomment the following to deploy via webhook:
+      #
+      # - name: Trigger deployment webhook
+      #   run: |
+      #     curl -X POST "${{ secrets.DEPLOY_WEBHOOK_URL }}" \
+      #       -H "Content-Type: application/json" \
+      #       -d '{"image": "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"}'
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Job 3: Deploy Preview (on PR only)
+  # ────────────────────────────────────────────────────────────────────────────
+  deploy-preview:
+    name: 👀 Deploy Preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build-image
+    if: github.event_name == 'pull_request'
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    environment:
+      name: preview
+      url: https://pr-${{ github.event.number }}.preview.your-domain.com
+
+    steps:
+      - name: Preview deployment info
+        run: |
+          echo "═══════════════════════════════════════════════════════════"
+          echo "👀 PREVIEW DEPLOYMENT — PR #${{ github.event.number }}"
+          echo "═══════════════════════════════════════════════════════════"
+          echo ""
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.number }}"
+          echo ""
+          echo "To run this preview locally:"
+          echo "  docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.number }}"
+          echo "  docker run -p 3000:3000 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.number }}"
+          echo ""
+          echo "═══════════════════════════════════════════════════════════"
+
+      - name: Comment preview URL on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const image = `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.number }}`;
+            const body = `## 🔍 Preview Deployment Ready
+
+            **Docker Image:** \`${image}\`
+
+            ### Run locally:
+            \`\`\`bash
+            docker pull ${image}
+            docker run -p 3000:3000 ${image}
+            # Visit http://localhost:3000
+            \`\`\`
+
+            ### Checklist for visual review:
+            - [ ] Animations play smoothly (GSAP/Framer Motion)
+            - [ ] Parallax scrolling works correctly
+            - [ ] Custom SVG/Lottie assets render properly
+            - [ ] Mobile responsive layout is correct
+            - [ ] No horizontal overflow on any viewport
+            - [ ] Page load time is acceptable
+
+            ---
+            *Deployed from commit ${{ github.sha }}*`;
+
+            // Find existing bot comment to update instead of spamming
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Preview Deployment Ready')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Job 4: Cleanup Preview (on PR close)
+  # ────────────────────────────────────────────────────────────────────────────
+  cleanup-preview:
+    name: 🧹 Cleanup Preview
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+
+    permissions:
+      packages: write
+
+    steps:
+      - name: Delete preview image
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Note: GHCR cleanup requires the package versions API
+            console.log('🧹 PR #${{ github.event.number }} closed.');
+            console.log('Preview image can be cleaned up manually or via GHCR retention policies.');
+            console.log('Image tag: pr-${{ github.event.number }}');

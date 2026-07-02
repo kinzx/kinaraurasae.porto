@@ -1,0 +1,25 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+out
+build
+.next/standalone
+
+# Package manager
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+
+# Coverage
+coverage
+
+# Playwright
+test-results
+playwright-report
