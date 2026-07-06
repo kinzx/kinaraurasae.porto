@@ -10,20 +10,26 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "all": "npm run typecheck && npm run lint && npm run test && npm run build && npm run e2e:install && npm run test:e2e && npm run dev",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
+    "test": "vitest run --configLoader runner",
+    "test:watch": "vitest --configLoader runner",
+    "test:coverage": "vitest run --configLoader runner --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "e2e:install": "playwright install chromium",
     "ci:quality": "npm run typecheck && npm run lint && npm run format:check",
-    "ci:test": "vitest run --reporter=verbose",
+    "ci:test": "vitest run --configLoader runner --reporter=verbose",
     "ci:build": "next build"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.42.2",
+    "lucide-react": "^1.23.0",
     "next": "16.2.10",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.50.0",
@@ -45,4 +51,3 @@
     "vitest": "^3.0.0"
   }
 }
-
