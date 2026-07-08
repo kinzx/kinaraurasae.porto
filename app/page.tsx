@@ -12,7 +12,7 @@ export default function Home() {
         className="flex min-h-screen items-center justify-center border-t border-white/10 bg-[#050505] px-6 text-center text-white"
       >
         <p className="font-mono text-sm tracking-widest text-white/60 uppercase">
-          Contact / portfolio details coming soon
+          Contact / portfolio details coming soon test
         </p>
       </footer>
     </main>
