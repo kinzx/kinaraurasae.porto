@@ -1,6 +1,16 @@
 'use client';
 
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  type Transition,
+  useMotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
+} from 'framer-motion';
+import { useState, type MouseEvent } from 'react';
 
 const floaters = [
   { mark: '*', className: 'left-[9%] top-[19%] text-6xl', delay: 0 },
@@ -9,13 +19,29 @@ const floaters = [
   { mark: '/', className: 'right-[11%] bottom-[22%] text-7xl', delay: 0.4 },
 ];
 
+const navLinks = ['about', 'work', 'contact'];
+const navTransition: Transition = {
+  type: 'spring',
+  stiffness: 280,
+  damping: 34,
+  mass: 0.8,
+};
+
 export function HeroSection() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { scrollY } = useScroll();
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
   const x = useSpring(rawX, { stiffness: 45, damping: 22 });
   const y = useSpring(rawY, { stiffness: 45, damping: 22 });
 
-  const move = (event: React.MouseEvent<HTMLElement>) => {
+  // Scroll state drives the nav morph: top name pill before 100px,
+  // editorial sidebar on desktop and compact bottom nav on mobile after it.
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setIsScrolled(latest > 100);
+  });
+
+  const move = (event: MouseEvent<HTMLElement>) => {
     rawX.set((event.clientX - window.innerWidth / 2) * 0.03);
     rawY.set((event.clientY - window.innerHeight / 2) * 0.03);
   };
@@ -25,24 +51,47 @@ export function HeroSection() {
       onMouseMove={move}
       className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#050505] px-6 text-white"
     >
-      <nav className="absolute top-6 right-6 left-6 z-20 flex justify-between font-mono text-xs font-medium tracking-widest text-white/70 uppercase md:top-8 md:right-8 md:left-8">
-        <div className="flex gap-5 md:gap-8">
-          <a href="#work" className="transition-opacity hover:opacity-60">
-            Work
-          </a>
-          <a href="#about" className="transition-opacity hover:opacity-60">
-            About
-          </a>
-        </div>
-        <div className="flex gap-5 md:gap-8">
-          <a href="#contact" className="transition-opacity hover:opacity-60">
-            Hello
-          </a>
-          <span>*</span>
-        </div>
-      </nav>
+      <LayoutGroup>
+        <AnimatePresence mode="popLayout" initial={false}>
+          {!isScrolled ? (
+            <motion.nav
+              key="top-nav"
+              layoutId="nav-shell"
+              transition={navTransition}
+              className="fixed top-6 left-1/2 z-30 flex -translate-x-1/2 items-center justify-center rounded-full border border-white/10 bg-[#050505]/50 px-5 py-3 font-mono text-xs tracking-widest text-white/75 uppercase backdrop-blur-md will-change-transform"
+            >
+              {/* layoutId keeps the brand visually connected during the nav morph. */}
+              <motion.a layoutId="nav-brand" href="#" className="whitespace-nowrap">
+                kinar.aurasae
+              </motion.a>
+            </motion.nav>
+          ) : (
+            <motion.nav
+              key="morphed-nav"
+              layoutId="nav-shell"
+              transition={navTransition}
+              className="fixed right-4 bottom-4 left-4 z-30 flex items-center justify-between rounded-full border border-white/10 bg-[#050505]/82 px-5 py-3 font-mono text-[0.68rem] tracking-widest text-white/72 uppercase shadow-2xl shadow-black/40 backdrop-blur-md will-change-transform md:top-5 md:right-auto md:bottom-5 md:left-5 md:w-40 md:flex-col md:items-start md:justify-start md:gap-10 md:rounded-sm md:px-5 md:py-6"
+            >
+              <motion.a layoutId="nav-brand" href="#" className="whitespace-nowrap text-white">
+                kinar.aurasae
+              </motion.a>
+              <div className="flex gap-5 md:flex-col md:gap-5">
+                {navLinks.map((link) => (
+                  <a key={link} href={`#${link}`} className="transition-opacity hover:opacity-60">
+                    {link}
+                  </a>
+                ))}
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
+      </LayoutGroup>
 
-      <div className="absolute right-6 bottom-6 left-6 z-20 flex justify-between font-mono text-xs font-medium tracking-widest text-white/45 uppercase md:right-8 md:bottom-8 md:left-8">
+      <div
+        className={`absolute right-6 bottom-6 left-6 z-20 flex justify-between font-mono text-xs font-medium tracking-widest text-white/45 uppercase transition-[left,opacity,transform] duration-500 md:right-8 md:bottom-8 ${
+          isScrolled ? 'translate-y-[-4.5rem] opacity-40 md:left-48' : 'md:left-8'
+        }`}
+      >
         <span>Portfolio</span>
         <span>Scroll</span>
       </div>
@@ -74,10 +123,10 @@ export function HeroSection() {
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
       >
         <p className="font-mono text-xs tracking-widest text-white/45 uppercase">
-          Monochrome Portfolio
+          Welcome to my
         </p>
         <h1 className="font-serif text-6xl leading-none font-bold text-white sm:text-8xl md:text-9xl lg:text-[10rem]">
-          Kinar.
+          Portfolio.
         </h1>
         <p className="max-w-lg text-sm leading-7 text-white/58 md:text-base">
           A quiet, scroll-led portfolio frame for selected work, profile, and contact.
