@@ -63,7 +63,7 @@ export default defineConfig({
 
   /* Start the production server before running E2E tests */
   webServer: {
-    command: 'npm run start',
+    command: 'node .next/standalone/server.js',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000, // 2 min — generous for heavy builds
