@@ -35,14 +35,20 @@ export function AiChat() {
         body: JSON.stringify({ message }),
       });
       const data = (await response.json()) as { reply?: string; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error ?? 'AI belum bisa dihubungi.');
+      }
       setMessages((current) => [
         ...current,
         { role: 'assistant', content: data.reply ?? data.error ?? 'Maaf, AI belum merespons.' },
       ]);
-    } catch {
+    } catch (error) {
       setMessages((current) => [
         ...current,
-        { role: 'assistant', content: 'AI belum bisa dihubungi. Cek Ollama di VPS.' },
+        {
+          role: 'assistant',
+          content: error instanceof Error ? error.message : 'AI belum bisa dihubungi.',
+        },
       ]);
     } finally {
       setIsLoading(false);
