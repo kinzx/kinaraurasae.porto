@@ -19,7 +19,12 @@ const floaters = [
   { mark: '/', className: 'right-[11%] bottom-[22%] text-7xl', delay: 0.4 },
 ];
 
-const navLinks = ['about', 'work', 'contact'];
+const navLinks = [
+  { label: 'intro', href: '#intro' },
+  { label: 'profile', href: '#profile' },
+  { label: 'work', href: '#work' },
+  { label: 'contact', href: '#contact' },
+];
 const navTransition: Transition = {
   type: 'spring',
   stiffness: 280,
@@ -48,6 +53,7 @@ export function HeroSection() {
 
   return (
     <section
+      id="intro"
       onMouseMove={move}
       className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#050505] px-6 text-white"
     >
@@ -75,10 +81,14 @@ export function HeroSection() {
               <motion.a layoutId="nav-brand" href="#" className="whitespace-nowrap text-white">
                 kinar.aurasae
               </motion.a>
-              <div className="flex gap-5 md:flex-col md:gap-5">
+              <div className="flex gap-3 md:flex-col md:gap-5">
                 {navLinks.map((link) => (
-                  <a key={link} href={`#${link}`} className="transition-opacity hover:opacity-60">
-                    {link}
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="transition-opacity hover:opacity-60"
+                  >
+                    {link.label}
                   </a>
                 ))}
               </div>
