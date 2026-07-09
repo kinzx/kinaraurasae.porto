@@ -12,6 +12,10 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
+      - OLLAMA_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=qwen2.5:1.5b
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     env_file:
       - .env.local
     restart: unless-stopped
@@ -36,6 +40,10 @@ services:
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true  # Enable polling for file changes in Docker
+      - OLLAMA_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=qwen2.5:1.5b
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     command: sh -c "npm install && npm run dev"
     profiles:
       - dev
