@@ -128,7 +128,7 @@ export function AboutSection() {
             {project.number === '1' ? (
               <motion.div
                 whileHover={{ y: -8 }}
-                className="relative z-10 grid min-h-[24rem] overflow-hidden bg-[#555] p-7 text-white md:grid-cols-[0.8fr_1.2fr] md:p-10"
+                className="relative z-10 grid min-h-[24rem] overflow-hidden  p-7 text-white md:grid-cols-[0.8fr_1.2fr] md:p-10"
               >
                 <div className="relative z-10 flex flex-col justify-between gap-12">
                   <div className="flex items-center gap-10">
@@ -166,7 +166,7 @@ export function AboutSection() {
                       </div>
                     </div>
                     <span className="absolute bottom-9 left-[-0.5rem] rotate-6 rounded-md bg-[#5157ff] px-3 py-1 font-serif text-lg text-white ring-2 ring-white">
-                      Katie
+                      kinzx
                     </span>
                   </div>
                 </div>

@@ -11,6 +11,7 @@ import {
   useSpring,
 } from 'framer-motion';
 import { useState, type MouseEvent } from 'react';
+import { AiChat } from './AiChat';
 
 const floaters = [
   { mark: '*', className: 'left-[9%] top-[19%] text-6xl', delay: 0 },
@@ -109,6 +110,7 @@ export function HeroSection() {
                   </a>
                 ))}
               </div>
+              <AiChat />
             </motion.nav>
           )}
         </AnimatePresence>
