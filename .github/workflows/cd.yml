@@ -10,9 +10,9 @@ name: CD — Build & Deploy
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 # Cancel in-progress deployments for the same ref
 concurrency:
@@ -98,13 +98,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: build-image
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
 
     environment:
       name: production
       url: ${{ vars.PRODUCTION_URL }}
 
     steps:
+      - name: Check VPS deploy secrets
+        run: |
+          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_KEY" ]; then
+            echo "::warning::VPS deploy skipped. Add SSH_HOST, SSH_USER, and SSH_KEY repository secrets."
+          fi
+
       - name: Deploy to production server
         run: |
           echo "═══════════════════════════════════════════════════════════"
@@ -116,9 +126,9 @@ jobs:
           echo ""
           echo "─── Deployment Options ───"
           echo ""
-          echo "Option A: SSH Deploy (uncomment and configure):"
+          echo "Option A: SSH Deploy:"
           echo "  1. Add SSH_HOST, SSH_USER, SSH_KEY to repository secrets"
-          echo "  2. Uncomment the SSH deploy step below"
+          echo "  2. Push or merge to main/master"
           echo ""
           echo "Option B: Webhook Deploy (uncomment and configure):"
           echo "  1. Add DEPLOY_WEBHOOK_URL to repository secrets"
@@ -131,6 +141,20 @@ jobs:
           echo "═══════════════════════════════════════════════════════════"
 
       # ── Option A: SSH Deploy ──────────────────────────────────────────
+      - name: Deploy via SSH
+        if: ${{ env.SSH_HOST != '' && env.SSH_USER != '' && env.SSH_KEY != '' }}
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ env.SSH_HOST }}
+          username: ${{ env.SSH_USER }}
+          key: ${{ env.SSH_KEY }}
+          script: |
+            cd /opt/portfolio
+            docker compose pull
+            docker compose down --remove-orphans
+            docker compose up -d
+            docker image prune -f
+
       # Uncomment the following to deploy via SSH:
       #
       # - name: Deploy via SSH

@@ -10,9 +10,9 @@ name: CI — Quality & Build
 on:
   workflow_dispatch:
   push:
-    branches: [main, develop]
+    branches: [main, master, develop]
   pull_request:
-    branches: [main, develop]
+    branches: [main, master, develop]
 
 # Cancel in-progress CI runs for the same branch/PR (saves runner minutes)
 concurrency:

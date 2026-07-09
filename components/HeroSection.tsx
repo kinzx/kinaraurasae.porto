@@ -34,6 +34,7 @@ const navTransition: Transition = {
 
 export function HeroSection() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeLink, setActiveLink] = useState('intro');
   const { scrollY } = useScroll();
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
@@ -44,6 +45,13 @@ export function HeroSection() {
   // editorial sidebar on desktop and compact bottom nav on mobile after it.
   useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsScrolled(latest > 100);
+    const active = [...navLinks]
+      .reverse()
+      .find(({ href }) => {
+        const section = document.querySelector(href);
+        return section && section.getBoundingClientRect().top <= window.innerHeight * 0.45;
+      });
+    if (active) setActiveLink(active.label);
   });
 
   const move = (event: MouseEvent<HTMLElement>) => {
@@ -67,7 +75,7 @@ export function HeroSection() {
               className="fixed top-6 left-1/2 z-30 flex -translate-x-1/2 items-center justify-center rounded-full border border-white/10 bg-[#050505]/50 px-5 py-3 font-mono text-xs tracking-widest text-white/75 uppercase backdrop-blur-md will-change-transform"
             >
               {/* layoutId keeps the brand visually connected during the nav morph. */}
-              <motion.a layoutId="nav-brand" href="#" className="whitespace-nowrap">
+              <motion.a layoutId="nav-brand" href="#intro" className="whitespace-nowrap">
                 kinar.aurasae
               </motion.a>
             </motion.nav>
@@ -76,18 +84,27 @@ export function HeroSection() {
               key="morphed-nav"
               layoutId="nav-shell"
               transition={navTransition}
-              className="fixed right-4 bottom-4 left-4 z-30 flex items-center justify-between rounded-full border border-white/10 bg-[#050505]/82 px-5 py-3 font-mono text-[0.68rem] tracking-widest text-white/72 uppercase shadow-2xl shadow-black/40 backdrop-blur-md will-change-transform md:top-5 md:right-auto md:bottom-5 md:left-5 md:w-40 md:flex-col md:items-start md:justify-start md:gap-10 md:rounded-sm md:px-5 md:py-6"
+              className="fixed right-4 bottom-4 left-4 z-30 flex items-center justify-between rounded-full border border-white/10 bg-[#050505]/82 px-5 py-3 font-mono text-[0.68rem] tracking-widest text-white/72 uppercase shadow-2xl shadow-black/40 backdrop-blur-md will-change-transform md:top-0 md:right-auto md:bottom-0 md:left-0 md:w-44 md:flex-col md:items-start md:justify-start md:gap-14 md:rounded-none md:border-y-0 md:border-l-0 md:bg-black/95 md:px-6 md:py-7"
             >
-              <motion.a layoutId="nav-brand" href="#" className="whitespace-nowrap text-white">
+              <motion.a layoutId="nav-brand" href="#intro" className="whitespace-nowrap text-white">
                 kinar.aurasae
               </motion.a>
-              <div className="flex gap-3 md:flex-col md:gap-5">
+              <div className="relative flex gap-3 md:ml-1 md:flex-col md:gap-6">
+                <span className="absolute top-2 bottom-2 left-[0.34rem] hidden w-px bg-white/25 md:block" />
                 {navLinks.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
-                    className="transition-opacity hover:opacity-60"
+                    onClick={() => setActiveLink(link.label)}
+                    className="relative flex items-center transition-opacity hover:opacity-60 md:pl-7"
                   >
+                    {activeLink === link.label && (
+                      <motion.span
+                        layoutId="sidebar-active-dot"
+                        transition={navTransition}
+                        className="absolute top-1/2 left-0 hidden h-3 w-3 -translate-y-1/2 rounded-full bg-white md:block"
+                      />
+                    )}
                     {link.label}
                   </a>
                 ))}
@@ -96,6 +113,21 @@ export function HeroSection() {
           )}
         </AnimatePresence>
       </LayoutGroup>
+
+      <div className="absolute bottom-3 left-1/2 z-20 -translate-x-1/2">
+        <motion.a
+          href="#profile"
+          aria-label="Scroll to profile"
+          className="flex h-24 w-14 flex-col items-center justify-center gap-2 rounded-full bg-white font-serif text-xs text-black shadow-2xl shadow-black/35"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2.4, ease: 'easeInOut', repeat: Infinity }}
+          whileHover={{ y: -8 }}
+          onClick={() => setActiveLink('profile')}
+        >
+          <span>Scroll</span>
+          <span className="text-5xl leading-none">&darr;</span>
+        </motion.a>
+      </div>
 
       <div
         className={`absolute right-6 bottom-6 left-6 z-20 flex justify-between font-mono text-xs font-medium tracking-widest text-white/45 uppercase transition-[left,opacity,transform] duration-500 md:right-8 md:bottom-8 ${
