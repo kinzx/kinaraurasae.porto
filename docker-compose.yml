@@ -1,6 +1,7 @@
 services:
   # ── Production ──────────────────────────────────────────────────────────────
   portfolio:
+    image: ghcr.io/kinzx/kinaraurasae.porto:latest
     build:
       context: .
       dockerfile: Dockerfile
