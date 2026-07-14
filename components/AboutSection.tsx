@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
+import Image from 'next/image';
 import { useRef } from 'react';
 
 const skills = ['React / Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Docker', 'CI/CD'];
@@ -59,8 +60,15 @@ export function AboutSection() {
               style={{ y: cardY }}
               className="rounded-[2rem] bg-[#d8d8d8] p-6 shadow-2xl shadow-black/10"
             >
-              <div className="grid aspect-[4/5] place-items-center rounded-[1.4rem] bg-[radial-gradient(circle_at_35%_20%,#ffffff,#bdbdbd_38%,#6d6d6d_68%,#2d2d2d)]">
-                <span className="font-serif text-7xl font-bold text-white/90">K</span>
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.4rem] bg-[#bdbdbd]">
+                <Image
+                  src="/kinar-profile.jpg"
+                  alt="Kinar Aurasae"
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 25rem, 90vw"
+                  className="object-cover object-top"
+                />
               </div>
               <div className="mt-6 grid gap-4">
                 {roles.slice(0, 2).map((role) => (
