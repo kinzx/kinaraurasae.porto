@@ -1,7 +1,6 @@
 import { HeroSection } from '../components/HeroSection';
 import { AboutSection } from '../components/AboutSection';
 import { PortfolioSection } from '../components/PortfolioSection';
-import { projek } from '../components/projek';
 
 export default function Home() {
   return (
