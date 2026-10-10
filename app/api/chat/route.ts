@@ -16,13 +16,13 @@ Kalau pengunjung bertanya soal project, arahkan ke section work dan jelaskan con
 `;
 
 export async function POST(request: Request) {
-  const { message } = (await request.json()) as { message?: string };
-
-  if (!message?.trim()) {
-    return NextResponse.json({ error: 'Message is required' }, { status: 400 });
-  }
-
   try {
+    const { message } = (await request.json()) as { message?: string };
+
+    if (!message?.trim()) {
+      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+    }
+
     const response = await fetch(`${OLLAMA_URL}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

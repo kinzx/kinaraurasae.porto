@@ -22,6 +22,7 @@ const floaters = [
 
 const navLinks = [
   { label: 'intro', href: '#intro' },
+  { label: 'portfolio', href: '#portfolio' },
   { label: 'profile', href: '#profile' },
   { label: 'work', href: '#work' },
   { label: 'contact', href: '#contact' },
@@ -85,19 +86,23 @@ export function HeroSection() {
               key="morphed-nav"
               layoutId="nav-shell"
               transition={navTransition}
-              className="fixed right-4 bottom-4 left-4 z-30 flex items-center justify-between rounded-full border border-white/10 bg-[#050505]/82 px-5 py-3 font-mono text-[0.68rem] tracking-widest text-white/72 uppercase shadow-2xl shadow-black/40 backdrop-blur-md will-change-transform md:top-0 md:right-auto md:bottom-0 md:left-0 md:w-44 md:flex-col md:items-start md:justify-start md:gap-14 md:rounded-none md:border-y-0 md:border-l-0 md:bg-black/95 md:px-6 md:py-7"
+              className="fixed right-4 bottom-4 left-4 z-30 flex items-center justify-between gap-1 rounded-full border border-white/10 bg-[#050505]/82 px-3 py-3 font-mono text-[0.68rem] tracking-widest text-white/72 uppercase shadow-2xl shadow-black/40 backdrop-blur-md will-change-transform max-sm:gap-0.5 max-sm:px-2 max-sm:text-[0.58rem] max-sm:tracking-[0.08em] md:top-0 md:right-auto md:bottom-0 md:left-0 md:w-44 md:flex-col md:items-start md:justify-start md:gap-14 md:rounded-none md:border-y-0 md:border-l-0 md:bg-black/95 md:px-6 md:py-7"
             >
-              <motion.a layoutId="nav-brand" href="#intro" className="whitespace-nowrap text-white">
+              <motion.a
+                layoutId="nav-brand"
+                href="#intro"
+                className="whitespace-nowrap text-white max-sm:shrink"
+              >
                 kinar.aurasae
               </motion.a>
-              <div className="relative flex gap-3 md:ml-1 md:flex-col md:gap-6">
+              <div className="relative flex gap-2 overflow-x-auto md:ml-1 md:flex-col md:gap-6 md:overflow-x-visible">
                 <span className="absolute top-2 bottom-2 left-[0.34rem] hidden w-px bg-white/25 md:block" />
                 {navLinks.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
                     onClick={() => setActiveLink(link.label)}
-                    className="relative flex items-center transition-opacity hover:opacity-60 md:pl-7"
+                    className="relative flex items-center whitespace-nowrap transition-opacity hover:opacity-60 md:pl-7"
                   >
                     {activeLink === link.label && (
                       <motion.span
