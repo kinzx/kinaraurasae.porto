@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import type { ReactElement } from 'react';
 
 const socials = [
   { src: '/asset/s2/linkedin.png', alt: 'LinkedIn', label: 'in' },
@@ -14,7 +15,7 @@ const skills = [
   { name: 'Devops', level: 72 },
 ];
 
-const TOOL_ICONS: Record<string, JSX.Element> = {
+const TOOL_ICONS: Record<string, ReactElement> = {
   figma: (
     // Figma official SVG
     <svg viewBox="0 0 38 57" className="h-11 w-auto" aria-label="Figma" role="img">
