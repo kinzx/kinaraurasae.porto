@@ -80,7 +80,7 @@ export default function Home() {
                 Contact
               </h2>
               <p className="mt-4 max-w-2xl font-serif text-base text-black/75 sm:text-lg">
-                Have a project, role, or idea in mind? Send a message and I&apos;ll reply as soon as
+                Have a project, or idea in mind? Send a message and I&apos;ll reply as soon as
                 I can.
               </p>
             </motion.div>
