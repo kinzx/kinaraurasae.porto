@@ -1,7 +1,8 @@
 {
   "mcpServers": {
-    "figma": {
-      "url": "http://127.0.0.1:3845/mcp"
+    "figcraft": {
+      "command": "C:\\Program Files\\ArtCraft\\FigCraft\\figcraft-cli.exe",
+      "args": ["mcp", "--attach", "47800"]
     }
   }
 }
