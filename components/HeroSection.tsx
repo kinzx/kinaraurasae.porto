@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useMotionValue, useScroll, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring } from 'motion/react';
 import type { MouseEvent } from 'react';
 
 const floaters = [
@@ -11,7 +11,6 @@ const floaters = [
 ];
 
 export function HeroSection() {
-  const { scrollY } = useScroll();
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
   const x = useSpring(rawX, { stiffness: 45, damping: 22 });
@@ -26,7 +25,7 @@ export function HeroSection() {
     <section
       id="intro"
       onMouseMove={move}
-      className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#050505] px-6 pt-16 text-white"
+      className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#050505] px-6 pt-16 text-white"
     >
       <div className="pointer-events-none absolute inset-0 z-0">
         <div className="absolute inset-y-0 left-1/2 w-px bg-white/10" />

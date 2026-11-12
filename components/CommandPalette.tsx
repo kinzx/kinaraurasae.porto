@@ -1,7 +1,16 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Award, FolderGit2, Home, Mail, PenTool, Search, User, Wrench } from 'lucide-react';
+import {
+  Envelope,
+  FolderSimple,
+  House,
+  MagnifyingGlass,
+  PenNib,
+  Trophy,
+  User,
+  Wrench,
+} from '@phosphor-icons/react';
 
 interface SearchItem {
   id: string;
@@ -9,20 +18,20 @@ interface SearchItem {
   subtitle?: string;
   category: 'NAV' | 'PROJECT';
   href: string;
-  icon: typeof Home;
+  icon: typeof House;
 }
 
 const searchDataset: SearchItem[] = [
-  { id: 'nav-home', title: 'Home', category: 'NAV', href: '#intro', icon: Home },
+  { id: 'nav-home', title: 'Home', category: 'NAV', href: '#intro', icon: House },
   { id: 'nav-about', title: 'About', category: 'NAV', href: '#profile', icon: User },
-  { id: 'nav-projects', title: 'Projects', category: 'NAV', href: '#work', icon: FolderGit2 },
+  { id: 'nav-projects', title: 'Projects', category: 'NAV', href: '#work', icon: FolderSimple },
   {
     id: 'nav-achievements',
     title: 'Achievements',
     subtitle: 'CTF & Experience',
     category: 'NAV',
     href: '#profile',
-    icon: Award,
+    icon: Trophy,
   },
   {
     id: 'nav-writings',
@@ -30,7 +39,7 @@ const searchDataset: SearchItem[] = [
     subtitle: 'Notes & documentation',
     category: 'NAV',
     href: '#work',
-    icon: PenTool,
+    icon: PenNib,
   },
   {
     id: 'nav-uses',
@@ -40,14 +49,14 @@ const searchDataset: SearchItem[] = [
     href: '#profile',
     icon: Wrench,
   },
-  { id: 'nav-contact', title: 'Contact', category: 'NAV', href: '#contact', icon: Mail },
+  { id: 'nav-contact', title: 'Contact', category: 'NAV', href: '#contact', icon: Envelope },
   {
     id: 'prj-unitrade',
     title: 'UniTrade',
     subtitle: 'Marketplace C2C Odoo 17 untuk mahasiswa Yogyakarta',
     category: 'PROJECT',
     href: '#work',
-    icon: FolderGit2,
+    icon: FolderSimple,
   },
   {
     id: 'prj-tehpoci',
@@ -55,7 +64,7 @@ const searchDataset: SearchItem[] = [
     subtitle: 'Eksplorasi antarmuka digital dan katalog produk UMKM',
     category: 'PROJECT',
     href: '#work',
-    icon: FolderGit2,
+    icon: FolderSimple,
   },
   {
     id: 'prj-sakoo',
@@ -63,7 +72,7 @@ const searchDataset: SearchItem[] = [
     subtitle: 'Personal finance assistant via WA, Telegram, Web Dashboard',
     category: 'PROJECT',
     href: '#work',
-    icon: FolderGit2,
+    icon: FolderSimple,
   },
   {
     id: 'prj-qrmaker',
@@ -71,7 +80,7 @@ const searchDataset: SearchItem[] = [
     subtitle: 'Aplikasi instant QR code generator tema dark mode',
     category: 'PROJECT',
     href: '#work',
-    icon: FolderGit2,
+    icon: FolderSimple,
   },
 ];
 
@@ -149,7 +158,7 @@ export function CommandPalette() {
             aria-modal="true"
           >
             <div className="flex items-center gap-3 border-b border-black/10 px-4 py-3.5">
-              <Search className="h-5 w-5 text-black/45" />
+              <MagnifyingGlass className="h-5 w-5 text-black/45" />
               <input
                 type="text"
                 value={query}
