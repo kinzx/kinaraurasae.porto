@@ -66,32 +66,64 @@ export default function Home() {
 
       <footer
         id="contact"
-        className="relative min-h-screen w-full overflow-hidden bg-[#FAFAFA] px-6 text-[#111111] lg:pr-14 lg:pl-60"
+        className="relative min-h-screen w-full overflow-hidden bg-[#FAFAFA] px-6 text-[#111111]"
       >
         <div className="relative z-10 mx-auto flex min-h-screen max-w-[90rem] flex-col justify-between py-20">
-          <div className="max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, x: -60 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false, amount: 0.25 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <h2 className="font-serif text-5xl font-bold tracking-tight text-black sm:text-6xl md:text-7xl">
-                Contact
-              </h2>
-              <p className="mt-4 max-w-2xl font-serif text-base text-black/75 sm:text-lg">
-                Have a project, or idea in mind? Send a message and I&apos;ll reply as soon as
-                I can.
-              </p>
-            </motion.div>
+          <div className="grid w-full items-start gap-12 lg:grid-cols-12 lg:gap-14">
+            {/* Left Column: Heading, description, direct channels */}
+            <div className="flex flex-col justify-between lg:col-span-5">
+              <motion.div
+                initial={{ opacity: 0, x: -60 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: false, amount: 0.25 }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <h2 className="font-serif text-5xl font-bold tracking-tight text-black sm:text-6xl md:text-7xl">
+                  Contact
+                </h2>
+                <p className="mt-4 max-w-xl font-serif text-base text-black/75 sm:text-lg">
+                  Have a project, or idea in mind? Send a message and I&apos;ll reply as soon as I
+                  can.
+                </p>
+              </motion.div>
 
-            {/* Contact Form Card */}
+              {/* Direct Channels */}
+              <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:mt-12 lg:grid-cols-1">
+                {contactChannels.map((c, index) => {
+                  const fromLeft = index % 2 === 0;
+                  return (
+                    <motion.a
+                      key={c.name}
+                      href={c.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      initial={{ opacity: 0, x: fromLeft ? -40 : 40, y: 15 }}
+                      whileInView={{ opacity: 1, x: 0, y: 0 }}
+                      viewport={{ once: false, amount: 0.2 }}
+                      transition={{
+                        duration: 0.55,
+                        delay: index * 0.08,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      className="group rounded-2xl border-2 border-black/15 bg-white p-4 shadow-sm transition-all hover:-translate-y-1 hover:border-black hover:shadow-md"
+                    >
+                      <p className="font-mono text-xs text-black/55 uppercase">{c.name}</p>
+                      <p className="mt-1 font-serif text-sm font-semibold text-black group-hover:underline">
+                        {c.value}
+                      </p>
+                    </motion.a>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Right Column: Contact Form Card */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.2 }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-10 rounded-2xl border-2 border-black/15 bg-white p-6 shadow-sm sm:p-8 md:p-10"
+              className="rounded-2xl border-2 border-black/15 bg-white p-6 shadow-sm sm:p-8 md:p-10 lg:col-span-7"
             >
               <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <div className="grid gap-6 sm:grid-cols-2">
@@ -185,35 +217,6 @@ export default function Home() {
                 </div>
               </form>
             </motion.div>
-
-            {/* Direct Channels */}
-            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {contactChannels.map((c, index) => {
-                const fromLeft = index % 2 === 0;
-                return (
-                  <motion.a
-                    key={c.name}
-                    href={c.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    initial={{ opacity: 0, x: fromLeft ? -40 : 40, y: 15 }}
-                    whileInView={{ opacity: 1, x: 0, y: 0 }}
-                    viewport={{ once: false, amount: 0.2 }}
-                    transition={{
-                      duration: 0.55,
-                      delay: index * 0.08,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="group rounded-2xl border-2 border-black/15 bg-white p-4 shadow-sm transition-all hover:-translate-y-1 hover:border-black hover:shadow-md"
-                  >
-                    <p className="font-mono text-xs text-black/55 uppercase">{c.name}</p>
-                    <p className="mt-1 font-serif text-sm font-semibold text-black group-hover:underline">
-                      {c.value}
-                    </p>
-                  </motion.a>
-                );
-              })}
-            </div>
           </div>
 
           <motion.div

@@ -24,9 +24,11 @@
     "ci:build": "next build"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "clsx": "^2.1.1",
     "framer-motion": "^12.42.2",
     "lucide-react": "^1.23.0",
+    "motion": "^14.12.0",
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4",

@@ -141,19 +141,6 @@ export function CommandPalette() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        aria-label="Search portfolio"
-        className="fixed top-6 right-6 z-40 flex items-center gap-2 rounded-full border border-black/15 bg-white/90 px-3.5 py-2 font-mono text-xs text-black shadow-lg backdrop-blur-md transition-transform hover:scale-105"
-      >
-        <Search className="h-4 w-4 text-black/60" />
-        <span className="hidden sm:inline">Search...</span>
-        <kbd className="rounded border border-black/20 bg-black/5 px-1.5 py-0.5 text-[0.65rem] text-black/70">
-          Ctrl K
-        </kbd>
-      </button>
-
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/55 p-4 pt-16 backdrop-blur-sm sm:pt-24">
           <div

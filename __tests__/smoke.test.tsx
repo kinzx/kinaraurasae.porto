@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import Home from '../app/page';
+import { Navbar } from '../components/Navbar';
 
 describe('Smoke Test & Portfolio Rendering', () => {
   it('should verify the test environment is working', () => {
@@ -45,7 +46,12 @@ describe('Smoke Test & Portfolio Rendering', () => {
   });
 
   it('renders search trigger and opens search command palette modal', () => {
-    render(<Home />);
+    render(
+      <>
+        <Navbar />
+        <Home />
+      </>,
+    );
 
     const searchButton = screen.getByRole('button', { name: /search portfolio/i });
     expect(searchButton).toBeInTheDocument();
