@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { type ReactElement, useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 const socials = [
   {
@@ -318,7 +318,7 @@ export function AboutSection() {
                     href={s.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="grid h-12 w-12 place-items-center rounded-full border-2 border-black/20 bg-white transition-all hover:scale-105 hover:border-black"
+                    className="grid h-12 w-12 place-items-center rounded-full border-2 border-black/20 bg-white transition-[transform,border-color] hover:scale-105 hover:border-black"
                     aria-label={s.alt}
                   >
                     <Image src={s.src} alt={s.alt} width={20} height={20} className="opacity-80" />
@@ -428,7 +428,7 @@ export function AboutSection() {
                 {TOOLS_LIST.map((tool) => (
                   <div
                     key={tool.id}
-                    className="group flex flex-col items-center justify-center gap-2.5 rounded-2xl border border-neutral-200/90 bg-white p-3.5 text-center shadow-xs transition-all hover:-translate-y-1 hover:border-black hover:shadow-md"
+                    className="group flex flex-col items-center justify-center gap-2.5 rounded-2xl border border-neutral-200/90 bg-white p-3.5 text-center shadow-xs transition-[transform,border-color,box-shadow] hover:-translate-y-1 hover:border-black hover:shadow-md"
                   >
                     <div className="flex h-12 w-12 items-center justify-center transition-transform group-hover:scale-105">
                       {tool.icon}

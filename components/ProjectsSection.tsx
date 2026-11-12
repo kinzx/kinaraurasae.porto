@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 interface ProjectItem {
   id: string;
@@ -66,7 +66,7 @@ export function ProjectsSection() {
   return (
     <section
       id="work"
-      className="relative w-full overflow-hidden bg-[#050505] px-6 py-24 text-white lg:pr-14 lg:pl-60"
+      className="relative w-full overflow-hidden bg-[#050505] px-6 py-24 text-white"
     >
       <div className="mx-auto max-w-[90rem]">
         <motion.div

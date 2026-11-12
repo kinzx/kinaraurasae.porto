@@ -134,24 +134,7 @@ export function PortfolioSection() {
                 ))}
               </div>
 
-              <a
-                href="#work"
-                className="flex h-16 items-center gap-3 rounded-full border-2 border-black pr-3 pl-7 transition-colors hover:bg-black hover:text-white"
-              >
-                <span className="font-serif text-lg italic">Look websites</span>
-                <span className="grid h-11 w-11 place-items-center rounded-full border-2 border-current">
-                  <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
-                    <path
-                      d="M7 17 17 7M9 7h8v8"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </a>
+              
             </div>
           </div>
 
